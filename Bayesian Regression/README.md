@@ -7,3 +7,4 @@ This is an attempt at creating a Bayesian Regression model using a slimmed down 
 - Kmeans_scaled_data100.csv data set that is used.
 - kmeans_data.r script used to clean the data for Bayesian Analysis
 - subset_credit_card_data.csv is a subset of my original data that I used for the bayesian analysis. Note that the original dataset is too large for github.
+- Associated YouTube video: https://youtu.be/s1Pm0oHPGT4

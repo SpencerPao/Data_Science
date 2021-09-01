@@ -1,4 +1,4 @@
-# Wrangling
+# Data Wrangling
 Python &amp; R scripts that go over the basics for data wrangling and munging. This includes some of the most popular methods. With these methods, you can go pretty far in the data science world when it comes to cleaning and flitering data.
 
 The associated youtube videos that these scripts are related to are the following:

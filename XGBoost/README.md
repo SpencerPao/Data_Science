@@ -4,7 +4,6 @@
 - Basic application for XGBoost Regression and Classification
 - 
 # Logic Behind XGBoost Classification
-XGBoost
 
 a) Start by building a tree (You stop growing the tree by limiting the number of levels set in the beginning). You do this by...
 
@@ -34,22 +33,23 @@ d) PREDICTIONS Like other boosting methods, XGBoost for classification makes new
 	1) Output (log odds prediction) = log(odds) of prediction + learning rate (aka eta) * output value from c) 
 	2) Calculate probability = exp(log(odds)) / (1 + exp(-log(odds))
 
+
+
 -------------------------------------------------------
 i) Do same thing for N trees.
 	Some things that have changed:
 		Use the previous predicted probabilities of the old tree into the equation: Sum of residuals squared / (sum previous probability(root) * (1 - Previous Probability)) + Lambda)
+	Follow same steps to get new predictions; keep building trees until the residuals have become minimized.
 
-	Follow same steps to get new predictions
-
-keep building trees until the residuals have become minimized.
-
-Summary:
-
+	# Summary:
 	Calculate similiarity scores
 	Use similarity scores from each node to calculate gain to split data
 	Prune tree via Gain - gamma
 	Calculate output values from the leaves
 	Calculate the predictions via logodds
+
+
+
 
 
 

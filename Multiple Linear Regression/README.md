@@ -1,2 +1,3 @@
 # Multiple-Linear-Regression
-A brief overview of Multiple Linear Regression in R
+- Multiple Linear Regression part 1 video: https://youtu.be/3G1mEzTL0qg
+- Multiple Linear Regression part 2 video: https://youtu.be/UvaivsJiHBQ

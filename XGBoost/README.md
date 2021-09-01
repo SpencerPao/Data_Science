@@ -5,7 +5,7 @@
 - 
 # Logic Behind XGBoost Classification
 
-a) Start by building a tree (You stop growing the tree by limiting the number of levels set in the beginning). You do this by...
+# a) Start by building a tree (You stop growing the tree by limiting the number of levels set in the beginning). You do this by...
 
 	1) You start by clustering the observations my residuals.
 
@@ -23,15 +23,15 @@ a) Start by building a tree (You stop growing the tree by limiting the number of
 	3) Cover is calculated by: (sum previous probability * (1 - Previous Probability))
 		This decides whether you will keep that branch or leaf. 
 
-b) Once you have wrote the tree, now you can start pruning the tree.
+# b) Once you have wrote the tree, now you can start pruning the tree.
 	1) Gain  - gamma. (You would only prune if Gain - gamma is a negative number)
 
-c) Calculate the output value for each node. : Sum of Residuals / (Sum (Previous Probability * (1 - Previous Probability)) + Lambda)
+# c) Calculate the output value for each node. : Sum of Residuals / (Sum (Previous Probability * (1 - Previous Probability)) + Lambda)
 
-d) PREDICTIONS Like other boosting methods, XGBoost for classification makes new predictions by startig w/ initial prediction
-	Need to convert the probability to a log odds value log(probability / (1 - Probability)) = log(odds)
-	1) Output (log odds prediction) = log(odds) of prediction + learning rate (aka eta) * output value from c) 
-	2) Calculate probability = exp(log(odds)) / (1 + exp(-log(odds))
+# d) PREDICTIONS: Like other boosting methods, XGBoost for classification makes new predictions by startig w/ initial prediction
+	# Need to convert the probability to a log odds value log(probability / (1 - Probability)) = log(odds)
+	- 1) Output (log odds prediction) = log(odds) of prediction + learning rate (aka eta) * output value from c) 
+	- 2) Calculate probability = exp(log(odds)) / (1 + exp(-log(odds))
 
 
 
@@ -48,7 +48,7 @@ i) Do same thing for N trees.
 	Calculate output values from the leaves
 	Calculate the predictions via logodds
 
-
+-------------------------------------------------------
 
 
 

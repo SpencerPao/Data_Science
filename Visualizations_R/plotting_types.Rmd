@@ -1,0 +1,284 @@
+---
+title: "Testing out Plotting capabilities in Rstudio"
+author: "Spencer Pao"
+date: "6/13/2021"
+output: html_document
+bibliography: bibliography.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Markdown (You can also LaTex Format as a Package in Rmarkdown)
+- You would typically output ONLY the visualizations with some customized text to illustrate what you are communicating. However, I will also be including the code that generates these graphics.
+
+You can think of this setup as Jupyter Notebooks in Rstudio. We have chunks, which are blocks of code.
+
+- You can run them individually and run like ordered objects.
+- You can then output the code and visualizations to a PDF, HTML, or Word document if you so choose. I will be demonstrating how to do this at the end of the video.
+- When you attempt to knit your document, make sure to not have any errors when you are running the document else you will have to re-knit everything once more. 
+- Lastly, when you are knitting your code, you will have to run the entire RMD file, and this can take particularly long. Thus, don't attempt to knit your document if you have extremely long run times, especially if you are prone to error.
+
+### These are the packages that I'll be using to create such graphics.
+```{r Loading in Packages}
+library(dplyr)
+library(ggplot2)
+library(vote)
+library(gganimate)
+library(gapminder)
+library(gifski)
+library(maps)
+#install.packages(transformr)
+```
+
+### Let's load in our datasets that we will be visualizing today.
+```{r}
+data("airquality")
+data(uspop)
+```
+### Adding an additional column to the airquality dataset to get Solar Radiation 'bucket'
+```{r}
+m <- c("High Intensity","Medium Intensity","Low Intensity")
+
+airquality <- airquality %>%
+  mutate(
+      Intensity = case_when(Solar.R < 100 ~ "Low Intensity",
+                            Solar.R < 200 ~ "Medium Intensity",
+                            TRUE ~ "High Intensity")
+    ) %>%
+  arrange(sapply(Intensity, function(x) which(x == m))) %>%
+  mutate(
+    group = factor(Intensity, levels = c("High Intensity",
+                                         "Medium Intensity",
+                                         "Low Intensity"))
+  )
+head(airquality)
+```
+
+### Let's checkout airquality (Temperature vs Ozone)
+```{r}
+ggplot(data = airquality, aes(x = Temp, y = Ozone, color = group)) + 
+  geom_point(aes(shape = group), size = 2) +
+  xlab("Temperature") + 
+  ylab("Ozone") + 
+  ggtitle("Temperature vs Ozone in May") + 
+  theme(plot.title = element_text(hjust = 0.5), legend.title = element_blank())
+```
+
+### Maybe we want to annotate a specific section of the plot? Let's get a rectangle somewhere...
+```{r}
+ggplot(data = airquality, aes(x = Temp, y = Ozone, color = group)) + 
+  geom_point(aes(shape = group), size = 2) +
+  xlab("Temperature") + 
+  ylab("Ozone") + 
+  ggtitle("Temperature vs Ozone in May") + 
+  theme(plot.title = element_text(hjust = 0.5), legend.title = element_blank()) +
+  annotate("rect", xmin=c(55), xmax=c(75), ymin=c(0) , ymax=c(50), alpha=0.2, color="blue", fill="blue")
+# We can also include a segment i.e  
+#annotate("segment", x = 55, xend = 75, y = 0, yend = 100, colour = "purple", size=3, alpha=0.6)
+
+```
+### Getting Airquality data into a desireable group format.
+```{r}
+airquality_bc <- airquality %>%
+  group_by(group) %>%
+  summarise_all(list(mean), na.rm = TRUE)
+airquality_bc
+```
+### High Quality Barchart
+```{r}
+ggplot(airquality_bc, aes(group, Temp)) + 
+  geom_bar(aes(fill=group),colour = "black",stat = "identity", width = 0.5) + 
+  scale_fill_brewer(palette="Pastel1") + 
+  xlab("") +
+  ylab("Average Temperature") + 
+  ggtitle("Average Temperature by Radiation Intensity") + 
+  theme(plot.title = element_text(hjust = 0.5), legend.position = "none") +
+  geom_text(
+    aes(label = round(Temp,2)),
+    colour = "black", size = 7,
+    vjust = 8, position=position_stack(vjust=1)
+    # + scale_fill_brewer(palette = "Pastel1") # I really like this color scheme!
+  )
+```
+
+# Let's get a Pie chart here.
+
+```{r}
+data(ims_election) # Loading in the data
+ims_pie <- ims_election %>%
+  summarise_all(list(sum), na.rm = TRUE)
+ims_pie <- t(ims_pie) # Transpose the data
+colnames(ims_pie)[1] <- "Counts"
+ims_pie <- as.data.frame(ims_pie)
+ims_pie <- tibble::rownames_to_column(ims_pie, "Person")
+ims_pie <- ims_pie %>%
+  mutate(proportion = Counts / sum(Counts) * 100) %>%
+  mutate(yposition= cumsum(proportion) - 0.5 * proportion)
+ims_pie
+```
+```{r}
+ggplot(ims_pie, aes(x="", y=Counts, fill=Person)) +
+  geom_bar(stat="identity", width=1, color="white") +
+  coord_polar("y", start=0) +
+  geom_text(aes(label = paste(round(proportion, 2), "%"), x = 1.3),
+            position = position_stack(vjust = 0.5)) + 
+  theme_classic() + 
+  theme(plot.title = element_text(hjust=0.5),
+        axis.line = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank()) +
+  ggtitle("Distribution of Counted Votes by Person") + 
+  xlab("") +
+  ylab("") +
+  coord_polar("y")
+```
+
+### Now, Let's get into the more advanced graphics. Interested in getting a moving graphic?
+#```{r}
+#gapminder
+#```
+```{r message = FALSE, warning = FALSE, results = FALSE}
+## standard ggplot2
+myPlot <- ggplot(data = gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) + # alpha controls transparancy
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(2, 12)) +
+  scale_x_log10() +
+  # Here comes the gganimate specific bits
+  labs(title = 'Year: {frame_time}', x = 'GDP per capita', y = 'life expectancy') +
+  transition_time(year) +
+  ease_aes('linear') + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+animate(myPlot, duration = 5, fps = 30, width = 600, height = 300, renderer = gifski_renderer())
+anim_save("output.gif") # Save as gif so that when we do RMD, it can search for the output and overlay on html document.
+```
+![](output.gif)
+
+
+Data Citation:
+MIT Election Data and Science Lab, 2017, "U.S. President 1976–2020", https://doi.org/10.7910/DVN/42MVDX, Harvard Dataverse, V6, UNF:6:4KoNz9KgTkXy0ZBxJ9ZkOw== [fileUNF]
+
+
+### Getting the most candidate votes from each state.
+```{r}
+voting <- read.csv("voting_data_1976_2020.csv")
+v <- voting %>% 
+  group_by(year, state) %>%
+  slice(which.max(candidatevotes)) %>%
+  filter(year == 1980) %>%
+  as.data.frame()
+
+head(v)
+centroid_coordinates <- read.csv("centroid_coordinates.csv")
+head(centroid_coordinates)
+
+# Want to make sure that everything can join...
+v$state <- tolower(v$state)
+
+us_states <- map_data("state")
+colnames(us_states)[5] <- "state"
+head(us_states)
+
+# Left Join on voting data and us_states
+v_plot <- left_join(us_states, v)
+head(v_plot)
+# Get the abbreviation with the centroids...
+centroid_coordiantes <- left_join(centroid_coordinates, v)
+```
+
+### Now, we have plotting capabailities on the US maps.
+```{r}
+party_colors <- c("#1405BD", "#DE0100")  # Democrat and Republican
+state_label <- v_plot %>%
+                group_by(state_po) %>%
+                select(long,lat) %>%
+                summarise_all(mean)
+colnames(state_label) <- c("state_abbrev", "Longitude", "Latitude")
+
+
+ggplot(data = v_plot,
+       mapping = aes(x = long,
+                     y = lat,
+                     group = group,
+                     fill = party_simplified)) +
+  geom_polygon(color = "gray90", size = 0.5) + 
+  with(centroid_coordiantes,
+       annotate(geom="text",
+                x = Longitude,
+                y=Latitude,
+                label = state_po,
+                size = 3,
+                colour = 'white')) +
+  scale_fill_manual(values=c("#1405BD",
+                             "#DE0100"))+
+  xlab("") + 
+  ylab("") +
+  theme(axis.ticks = element_blank()) +
+  theme(axis.text = element_blank()) +
+  guides(fill=guide_legend(title="Party Vote"))
+```
+
+### Let's see the plots in animation now! :) 
+```{r}
+# Re-cleaning the data to get all years
+v <- voting %>% 
+  group_by(year, state) %>%
+  slice(which.max(candidatevotes)) %>%
+  #filter(year == 1976) %>%
+  as.data.frame()
+v$state <- tolower(v$state)
+
+# But, to make the animation smooth, we need to have 'consecutive' years. Since
+# US elections only happen once every 4 years, I will go ahead and duplicate each row
+# an additional 3 times and increment the year by 1.
+v1 <- v
+v1$year = v1$year + 1
+v2 <- v
+v2$year = v2$year + 2
+v3 <- v
+v3$year = v3$year + 3
+
+# Combine everything...
+v <- rbind(v,v1,v2,v3)
+
+
+# Left Join on voting data and us_states
+v_plot <- left_join(us_states, v)
+head(v_plot)
+# Get the abbreviation with the centroids...
+centroid_coordiantes <- left_join(centroid_coordinates, v)
+```
+
+### Plotting the animation...
+```{r message = FALSE, warning = FALSE, results = FALSE}
+
+
+map_plot <- ggplot(data = v_plot,
+                   aes(x = long,
+                       y = lat,
+                       group = group,
+                       fill = party_simplified)) +
+  geom_polygon(color = "gray90", size = 0.5) + 
+  with(centroid_coordiantes, annotate(geom="text",
+                                      x = Longitude,
+                                      y=Latitude,
+                                      label = state_po,
+                                      size = 3,
+                                      colour = 'white')) +
+  scale_fill_manual(values=c("#1405BD", "#DE0100"))+
+  xlab("") + 
+  ylab("") +
+  theme(axis.ticks = element_blank()) +
+  theme(axis.text = element_blank()) +
+  guides(fill=guide_legend(title="Party Vote")) +
+  # Here comes the gganimate specific bits
+  labs(title = 'Year: {frame_time}') +
+  transition_time(year) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+animate(map_plot, duration = 5, fps = 30, width = 600, height = 300, renderer = gifski_renderer())
+anim_save("map.gif") 
+```
+![](map.gif)

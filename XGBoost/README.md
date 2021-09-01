@@ -2,7 +2,7 @@
 - Demonstrating what XGBoost is and how it can be applied to a Classification Problem
 - Notebook walkthrough (and walk-along) on applying XGBoost
 - Basic application for XGBoost Regression and Classification
-- 
+
 # Logic Behind XGBoost Classification
 
 # a) Start by building a tree (You stop growing the tree by limiting the number of levels set in the beginning). You do this by...
@@ -37,7 +37,7 @@
 
 
 -------------------------------------------------------
-i) Do same thing for N trees.
+e) Do same thing for N trees.
 	Some things that have changed:
 		Use the previous predicted probabilities of the old tree into the equation: Sum of residuals squared / (sum previous probability(root) * (1 - Previous Probability)) + Lambda)
 	Follow same steps to get new predictions; keep building trees until the residuals have become minimized.

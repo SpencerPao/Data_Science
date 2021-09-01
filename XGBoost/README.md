@@ -29,8 +29,8 @@
 # c) Calculate the output value for each node. 
 	1) Sum of Residuals / (Sum (Previous Probability * (1 - Previous Probability)) + Lambda)
 
-# d) PREDICTIONS: Like other boosting methods, XGBoost for classification makes new predictions by startig w/ initial prediction
-	# Need to convert the probability to a log odds value log(probability / (1 - Probability)) = log(odds)
+# d) PREDICTIONS: 
+	# Like other boosting methods, XGBoost for classification makes new predictions by startig w/ initial prediction; Need to convert the probability to a log odds value log(probability / (1 - Probability)) = log(odds)
 	- 1) Output (log odds prediction) = log(odds) of prediction + learning rate (aka eta) * output value from c) 
 	- 2) Calculate probability = exp(log(odds)) / (1 + exp(-log(odds))
 

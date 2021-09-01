@@ -26,7 +26,8 @@
 # b) Once you have wrote the tree, now you can start pruning the tree.
 	1) Gain  - gamma. (You would only prune if Gain - gamma is a negative number)
 
-# c) Calculate the output value for each node. : Sum of Residuals / (Sum (Previous Probability * (1 - Previous Probability)) + Lambda)
+# c) Calculate the output value for each node. 
+	1) Sum of Residuals / (Sum (Previous Probability * (1 - Previous Probability)) + Lambda)
 
 # d) PREDICTIONS: Like other boosting methods, XGBoost for classification makes new predictions by startig w/ initial prediction
 	# Need to convert the probability to a log odds value log(probability / (1 - Probability)) = log(odds)

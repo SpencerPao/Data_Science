@@ -4,4 +4,3 @@ Make sure to download the dataset from Kaggle to follow along. For space purpose
 - This is related to the Naive Bayes Classifer YouTube video I created here: https://youtu.be/TWF60HjM-mI
 - Data comes from Kaggle located here: https://www.kaggle.com/ankurzing/sentiment-analysis-for-financial-news
 - Inspiration on Naive Bayes comes from this resource: https://www.r-bloggers.com/2019/11/learning-data-science-sentiment-analysis-with-naive-bayes/
-- Associated YouTube video: https://youtu.be/TWF60HjM-mI

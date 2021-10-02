@@ -5,5 +5,5 @@
 
 # Associated YouTube Videos
 The Theory for Regression and Classification techniques are covered in the associated videos:
-- [**XGBoost Regression**](https://youtu.be/QUp8EYNkHFU)
-- [**XGBoost Classification**](https://youtu.be/qjeUhuvkbHY)
+- [**XGBoost Regression Video**](https://youtu.be/QUp8EYNkHFU)
+- [**XGBoost Classification Video**](https://youtu.be/qjeUhuvkbHY)

@@ -3,5 +3,4 @@
 - The Recommendation_Systems.ipynb is a robust notebook that goes into detail on how recommendation systems work 
 - Utilizes Matrix Factorization and KMeans for movie predictions
 - Dataset is Movie Lens: # F. Maxwell Harper and Joseph A. Konstan. 2015. The MovieLens Datasets: History and Context. ACM Transactions on Interactive Intelligent Systems (TiiS) 5, 4: 19:1–19:19. [**Link to Paper**](https://doi.org/10.1145/2827872)
-- This notebook is in conjunction with the following YouTube Video: [**YouTube Video on Recommendation Systems**](https://youtu.be/G4MBc40rQ2k)
 - Associated YouTube Video: [**Supplemental Material**](https://youtu.be/G4MBc40rQ2k)
